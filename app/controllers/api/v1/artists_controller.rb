@@ -11,7 +11,6 @@ class Api::V1::ArtistsController < ApplicationController
       last_page: @artists.total_pages,
       prev: @artists.prev_page,
       next: @artists.next_page
-
     }
   end
 

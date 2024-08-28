@@ -1,11 +1,18 @@
 class Api::V1::UsersController < ApplicationController
+  include Paginable
     before_action :set_user, only: %i[show update destroy]
     before_action :check_owner, only: %i[update destroy]
 
     # GET /users
     def index
-      @users = User.all
-      render json: @users
+      @users = User.page(current_page).per(per_page)
+      render json: {
+        users: @users,
+        current_user: @users.current_page,
+        last_page: @users.total_pages,
+        prev: @users.prev_page,
+        next: @users.next_page
+      }
     end
 
     # GET /user
