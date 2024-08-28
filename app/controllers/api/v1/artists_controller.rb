@@ -1,5 +1,6 @@
 class Api::V1::ArtistsController < ApplicationController
   before_action :check_login, only: %i[show create update destroy]
+  before_action :set_artist, only:  %i[update destroy]
 
   def index
     render json: Artist.all
@@ -32,6 +33,10 @@ class Api::V1::ArtistsController < ApplicationController
   end
 
   private
+
+  def set_artist
+    @artist = Artist.find(params[:id])
+  end
 
   def artist_params
     params.require(:artist).permit(:name, :dob, :gender, :address, :first_release_year, :no_of_albums_released)
