@@ -1,6 +1,10 @@
 class Api::V1::ArtistsController < ApplicationController
   before_action :check_login, only: %i[show create update destroy]
 
+  def index
+    render json: Artist.all
+  end
+
   def show
     render json: Artist.find(params[:id])
   end
@@ -10,7 +14,7 @@ class Api::V1::ArtistsController < ApplicationController
     if @artist.save
       render json: @artist, status: :created
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: @artist.errors, status: :unprocessable_entity
     end
   end
 
