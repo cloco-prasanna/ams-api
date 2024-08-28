@@ -1,5 +1,5 @@
 class Artist < ApplicationRecord
-  has_many :musics
+  has_many :musics, dependent: :destroy
   enum :gender, { male: "male", female: "female", other: "other" }
 
   validates :name, presence: true, uniqueness: true
