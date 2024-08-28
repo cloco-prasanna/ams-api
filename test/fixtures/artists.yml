@@ -1,17 +1,17 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
+  name: artist1
   dob: 2024-08-28 09:51:05
-  gender: MyString
+  gender: female
   address: MyString
   first_release_year: 1
   no_of_albums_released: 1
 
 two:
-  name: MyString
+  name: artist2
   dob: 2024-08-28 09:51:05
-  gender: MyString
+  gender: male
   address: MyString
   first_release_year: 1
   no_of_albums_released: 1
