@@ -1,6 +1,6 @@
 class Api::V1::ArtistsController < ApplicationController
   include Paginable
-  before_action :check_login, only: %i[show create update destroy]
+  before_action :check_login, only: %i[index show create update destroy]
   before_action :set_artist, only:  %i[update destroy]
 
   def index
