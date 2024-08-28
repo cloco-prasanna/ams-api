@@ -2,6 +2,13 @@ class Api::V1::UsersController < ApplicationController
     before_action :set_user, only: %i[show update destroy]
     before_action :check_owner, only: %i[update destroy]
 
+    # GET /users
+    def index
+      @users = User.all
+      render json: @users
+    end
+
+    # GET /user
     def show
         render json: User.find(params[:id])
     end
@@ -32,7 +39,7 @@ class Api::V1::UsersController < ApplicationController
     private
 
     def user_params
-        params.require(:user).permit(:email, :password)
+        params.require(:user).permit(:email, :password, :first_name, :last_name, :phone, :gender, :address)
     end
 
     def set_user
