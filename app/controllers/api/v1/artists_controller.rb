@@ -28,7 +28,7 @@ class Api::V1::ArtistsController < ApplicationController
   end
 
   def update
-    if @artist.update(user_params)
+    if @artist.update(artist_params)
       render json: @artist, status: :ok
     else
       render json: @user.errors, status: :unprocessable_entity
