@@ -13,6 +13,9 @@ Rails.application.routes.draw do
       resources :tokens, only: [ :create ]
       resources :artists, only: %i[index show create update destroy] do
         resources :musics, only: %i[index show create update destroy]
+        collection do
+          post :import
+        end
       end
     end
   end

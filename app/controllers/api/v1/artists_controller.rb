@@ -1,7 +1,7 @@
 class Api::V1::ArtistsController < ApplicationController
   include Paginable
-  before_action :check_login, only: %i[index show create update destroy]
-  before_action :set_artist, only:  %i[update destroy]
+  before_action :check_login, only: %i[index show create update destroy import]
+  before_action :set_artist, only:  %i[update destroy ]
 
   def index
     @artists = Artist.page(current_page).per(per_page)
@@ -38,6 +38,24 @@ class Api::V1::ArtistsController < ApplicationController
   def destroy
     @artist.destroy
     head 204
+  end
+
+  def import
+    artists = params[:artists]
+    if artists.present?
+      begin
+        artists.each do |artist_params|
+          artist = Artist.new(artist_params.permit(:name, :genre, :gender, :address, :first_release_year, :no_of_albums_released))
+          artist.save!
+        end
+        render json: { message: "Artist imported" }, status: :ok
+        rescue StandardError => e
+          render json: { message: e.message }, status: :unprocessable_entity
+        end
+    else
+        render json: { message: "No data provided " }, status: :unprocessable_entity
+
+    end
   end
 
   private
