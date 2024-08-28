@@ -12,7 +12,7 @@ Rails.application.routes.draw do
       resources :users, only: %i[index show create update destroy]
       resources :tokens, only: [ :create ]
       resources :artists, only: %i[index show create update destroy] do
-        resources :musics, only: %i[index show]
+        resources :musics, only: %i[index show create update destroy]
       end
     end
   end
