@@ -1,9 +1,18 @@
 class Api::V1::ArtistsController < ApplicationController
+  include Paginable
   before_action :check_login, only: %i[show create update destroy]
   before_action :set_artist, only:  %i[update destroy]
 
   def index
-    render json: Artist.all
+    @artists = Artist.page(current_page).per(per_page)
+    render json: {
+      artists: @artists,
+      current_page: @artists.current_page,
+      last_page: @artists.total_pages,
+      prev: @artists.prev_page,
+      next: @artists.next_page
+
+    }
   end
 
   def show
