@@ -1,3 +1,4 @@
+require "csv"
 class Api::V1::ArtistsController < ApplicationController
   include Paginable
   before_action :check_login, only: %i[index show create update destroy import]
@@ -41,20 +42,25 @@ class Api::V1::ArtistsController < ApplicationController
   end
 
   def import
-    artists = params[:artists]
-    if artists.present?
-      begin
-        artists.each do |artist_params|
-          artist = Artist.new(artist_params.permit(:name, :genre, :gender, :address, :first_release_year, :no_of_albums_released))
-          artist.save!
-        end
-        render json: { message: "Artist imported" }, status: :ok
-        rescue StandardError => e
-          render json: { message: e.message }, status: :unprocessable_entity
-        end
-    else
-        render json: { message: "No data provided " }, status: :unprocessable_entity
+    if params[:file].present?
+      file = params[:file].tempfile
+      csv_data = CSV.read(file, headers: true)
 
+      artists = csv_data.map do |row|
+        {
+          name: row["name"],
+          dob: row["dob"],
+          gender: row["gender"],
+          address: row["address"],
+          first_release_year: row["first_release_year"],
+          no_of_albums_released: row["no_of_albums_released"]
+        }
+      end
+      Artist.create(artists)
+
+    render json: artists, status: :ok
+    else
+    render json: { error: "Upload failed" }, status: :unprocessable_entity
     end
   end
 
