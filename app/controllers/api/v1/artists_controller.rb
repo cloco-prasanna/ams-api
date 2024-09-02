@@ -11,7 +11,9 @@ class Api::V1::ArtistsController < ApplicationController
       current_page: @artists.current_page,
       last_page: @artists.total_pages,
       prev: @artists.prev_page,
-      next: @artists.next_page
+      next: @artists.next_page,
+      totalCount: Artist.count
+
     }
   end
 
@@ -62,6 +64,19 @@ class Api::V1::ArtistsController < ApplicationController
     else
     render json: { error: "Upload failed" }, status: :unprocessable_entity
     end
+  end
+
+
+  def artist_analytics
+    @artists = Artist.
+    render json: {
+      artists: @artists,
+      current_page: @artists.current_page,
+      last_page: @artists.total_pages,
+      prev: @artists.prev_page,
+      next: @artists.next_page,
+      totalCount: Artist.count
+    }
   end
 
   private

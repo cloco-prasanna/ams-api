@@ -11,7 +11,8 @@ class Api::V1::UsersController < ApplicationController
         current_user: @users.current_page,
         last_page: @users.total_pages,
         prev: @users.prev_page,
-        next: @users.next_page
+        next: @users.next_page,
+        totalCount: User.count
       }
     end
 

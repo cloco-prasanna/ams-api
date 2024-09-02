@@ -10,7 +10,8 @@ class Api::V1::MusicsController < ApplicationController
       current_page: @musics.current_page,
       last_page: @musics.total_pages,
       prev: @musics.prev_page,
-      next: @musics.next_page
+      next: @musics.next_page,
+      totalCount: Music.count
     }
   end
 
@@ -40,6 +41,19 @@ class Api::V1::MusicsController < ApplicationController
     @music = @artist.musics.find(params[:id])
     @music.destroy
     head 204
+  end
+
+  def genre_musics
+    genreCounts = Music.group(:genre).count
+    render json: {
+      genres: [
+        {  name: "Jazz", count: genreCounts["jazz"] },
+        {  name: "Rock", count: genreCounts["rock"] },
+        {  name: "Country", count: genreCounts["country"] },
+        {  name: "RnB", count: genreCounts["rnb"] },
+        {  name: "Classic", count: genreCounts["classic"] }
+      ]
+    }
   end
 
   private
