@@ -3,7 +3,12 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
-      resources :tokens, only: [ :create ]
+      resources :auth, only: [ :create ] do
+      collection do
+        post :login, to: "auth#login"
+        post :register, to: "auth#register"
+      end
+    end
       resources :users, only: %i[index show create update destroy]
       resources :artists, only: %i[index show create update destroy] do
         resources :musics, only: %i[index show create update destroy] do

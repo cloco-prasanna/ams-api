@@ -14,6 +14,11 @@ module Authenticable
 
   protected
 
+  def check_isadmin
+    puts self.current_user
+    head :forbidden unless self.current_user&.role=="admin"
+  end
+
   def check_login
     head :forbidden unless self.current_user
   end

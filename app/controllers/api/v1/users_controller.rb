@@ -1,7 +1,8 @@
 class Api::V1::UsersController < ApplicationController
   include Paginable
     before_action :set_user, only: %i[show update destroy]
-    before_action :check_login, only: %i[update destroy]
+    before_action :check_login, :check_owner, only: %i[update destroy]
+    before_action :check_isadmin, only: %i[create]
 
     # GET /users
     def index
@@ -23,7 +24,8 @@ class Api::V1::UsersController < ApplicationController
 
     # POST /users
     def create
-        @user = User.new(user_params)
+      user_with_default_role = user_params.merge(role: user_params[:role] || "user")
+        @user = User.new(user_with_default_role)
         if @user.save
             render json: @user, status: :created
         else
@@ -47,7 +49,7 @@ class Api::V1::UsersController < ApplicationController
     private
 
     def user_params
-        params.require(:user).permit(:email, :password, :first_name, :last_name, :dob, :phone, :gender, :address)
+        params.require(:user).permit(:email, :password, :first_name, :last_name, :dob, :phone, :gender, :address, :role)
     end
 
     def set_user
@@ -55,6 +57,6 @@ class Api::V1::UsersController < ApplicationController
     end
 
     def check_owner
-      head :forbidden unless @user.id == current_user&.id
+      head :forbidden unless @user.id == current_user&.id || current_user&.role=="admin"
     end
 end
