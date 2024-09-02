@@ -1,10 +1,10 @@
 class Api::V1::MusicsController < ApplicationController
   include Paginable
   before_action :check_login, only: %i[ index show create update destroy ]
-  before_action :set_artist, only: %i[create update destroy]
+  before_action :set_artist, only: %i[index create update destroy]
 
   def index
-    @musics = Music.page(current_page).per(per_page)
+    @musics = @artist.musics.page(current_page).per(per_page)
     render json: {
       musics: @musics,
       current_page: @musics.current_page,
