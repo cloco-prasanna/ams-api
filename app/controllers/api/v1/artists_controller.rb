@@ -5,7 +5,20 @@ class Api::V1::ArtistsController < ApplicationController
   before_action :set_artist, only:  %i[update destroy ]
 
   def index
-    @artists = Artist.page(current_page).per(per_page).order(created_at: :desc)
+    search_query = params[:search].presence
+    order_by = params[:order_by].presence || 'created_at'
+    sort_order = params[:sort_order].presence || 'desc'
+
+    artists  = Artist.all
+
+    if search_query
+      artists = artists.where('name ILIKE :query', query: "%#{search_query}%")
+    end
+
+    artists = artists.order("#{order_by} #{sort_order}")
+
+    @artists = artists.page(current_page).per(per_page)
+
     render json: {
       artists: @artists,
       current_page: @artists.current_page,
@@ -13,7 +26,6 @@ class Api::V1::ArtistsController < ApplicationController
       prev: @artists.prev_page,
       next: @artists.next_page,
       totalCount: Artist.count
-
     }
   end
 
