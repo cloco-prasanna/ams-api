@@ -10,7 +10,11 @@ Rails.application.routes.draw do
         put :change_password, to: "auth#change_password"
       end
     end
-      resources :users, only: %i[index show create update destroy]
+      resources :users, only: %i[index show create update destroy] do
+        member do
+          put :role, to: "users#role"
+        end
+      end
       resources :artists, only: %i[index show create update destroy] do
         resources :musics, only: %i[index show create update destroy] do
           collection do

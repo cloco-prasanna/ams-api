@@ -1,8 +1,8 @@
 class Api::V1::UsersController < ApplicationController
   include Paginable
-    before_action :set_user, only: %i[show update destroy]
+    before_action :set_user, only: %i[show update role destroy]
     before_action :check_login, :check_owner, only: %i[update destroy]
-    before_action :check_isadmin, only: %i[create]
+    before_action :check_isadmin, only: %i[create role]
 
     # GET /users
     def index
@@ -52,6 +52,16 @@ class Api::V1::UsersController < ApplicationController
         render json: @user.errors, status: :unprocessable_entity
       end
     end
+
+
+    def role
+      if @user.update(role: params[:role])
+        render json: @user.role, status: :ok
+      else
+        render json: @user.errors, status: :unprocessable_entity
+      end
+    end
+
 
     def destroy
       @user.destroy
