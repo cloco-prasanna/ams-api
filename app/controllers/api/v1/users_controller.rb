@@ -6,7 +6,7 @@ class Api::V1::UsersController < ApplicationController
 
     # GET /users
     def index
-      @users = User.page(current_page).per(per_page)
+      @users = User.page(current_page).per(per_page).order(created_at: :desc)
       render json: {
         users: @users,
         current_user: @users.current_page,

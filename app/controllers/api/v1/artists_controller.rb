@@ -5,7 +5,7 @@ class Api::V1::ArtistsController < ApplicationController
   before_action :set_artist, only:  %i[update destroy ]
 
   def index
-    @artists = Artist.page(current_page).per(per_page)
+    @artists = Artist.page(current_page).per(per_page).order(created_at: :desc)
     render json: {
       artists: @artists,
       current_page: @artists.current_page,

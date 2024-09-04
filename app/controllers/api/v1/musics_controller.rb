@@ -4,7 +4,7 @@ class Api::V1::MusicsController < ApplicationController
   before_action :set_artist, only: %i[index create update destroy]
 
   def index
-    @musics = @artist.musics.page(current_page).per(per_page)
+    @musics = @artist.musics.page(current_page).per(per_page).order(created_at: :desc)
     render json: {
       musics: @musics,
       current_page: @musics.current_page,
