@@ -7,21 +7,19 @@ class Api::V1::UsersController < ApplicationController
     # GET /users
     def index
       search_query = params[:search].presence
-      order_by = params[:order_by].presence || 'created_at'
-      sort_order = params[:sort_order].presence || 'desc'
+      order_by = params[:order_by].presence || "created_at"
+      sort_order = params[:sort_order].presence || "desc"
 
       users = User.all
 
-      total_count = users.count
-    
       if search_query
-        users = users.where('email ILIKE :query OR first_name ILIKE :query OR last_name ILIKE :query', query: "%#{search_query}%")
+        users = users.where("email ILIKE :query OR first_name ILIKE :query OR last_name ILIKE :query", query: "%#{search_query}%")
       end
-    
+
       users = users.order("#{order_by} #{sort_order}")
-    
+
       @users = users.page(current_page).per(per_page)
-    
+
       render json: {
         users: @users,
         current_page: @users.current_page,

@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       collection do
         post :login, to: "auth#login"
         post :register, to: "auth#register"
+        patch :change_password, to: "auth#change_password"
       end
     end
       resources :users, only: %i[index show create update destroy]
