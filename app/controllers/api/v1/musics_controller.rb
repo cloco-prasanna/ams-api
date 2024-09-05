@@ -4,7 +4,24 @@ class Api::V1::MusicsController < ApplicationController
   before_action :set_artist, only: %i[index create update destroy]
 
   def index
-    @musics = @artist.musics.page(current_page).per(per_page).order(created_at: :desc)
+    search_query = params[:search].presence
+    genre = params[:genre].presence
+    order_by = params[:order_by].presence || 'created_at'
+    sort_order = params[:sort_order].presence || 'desc'
+
+    musics = @artist.musics.all
+
+    if genre
+      musics = musics.where(genre: genre)
+    end
+
+    if search_query
+      musics= musics.where('title ILIKE :query OR album_name ILIKE :query', query:"%#{search_query}%")
+    end
+
+    musics = musics.order("#{order_by} #{sort_order}")
+
+    @musics = musics.page(current_page).per(per_page)
     render json: {
       musics: @musics,
       current_page: @musics.current_page,

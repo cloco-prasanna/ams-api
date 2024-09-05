@@ -1,22 +1,34 @@
 class Api::V1::UsersController < ApplicationController
   include Paginable
-    before_action :set_user, only: %i[show update destroy]
+    before_action :set_user, only: %i[show update role destroy]
     before_action :check_login, :check_owner, only: %i[update destroy]
-    before_action :check_isadmin, only: %i[create]
+    before_action :check_isadmin, only: %i[create role]
 
     # GET /users
     def index
-      @users = User.page(current_page).per(per_page).order(created_at: :desc)
+      search_query = params[:search].presence
+      order_by = params[:order_by].presence || "created_at"
+      sort_order = params[:sort_order].presence || "desc"
+
+      users = User.all
+
+      if search_query
+        users = users.where("email ILIKE :query OR first_name ILIKE :query OR last_name ILIKE :query", query: "%#{search_query}%")
+      end
+
+      users = users.order("#{order_by} #{sort_order}")
+
+      @users = users.page(current_page).per(per_page)
+
       render json: {
         users: @users,
-        current_user: @users.current_page,
+        current_page: @users.current_page,
         last_page: @users.total_pages,
         prev: @users.prev_page,
         next: @users.next_page,
         totalCount: User.count
       }
     end
-
     # GET /user
     def show
         render json: User.find(params[:id])
@@ -40,6 +52,16 @@ class Api::V1::UsersController < ApplicationController
         render json: @user.errors, status: :unprocessable_entity
       end
     end
+
+
+    def role
+      if @user.update(role: params[:role])
+        render json: @user.role, status: :ok
+      else
+        render json: @user.errors, status: :unprocessable_entity
+      end
+    end
+
 
     def destroy
       @user.destroy
